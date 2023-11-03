@@ -1,0 +1,88 @@
+@startuml
+
+namespace Diagrama_De_Clases{
+   class Equipo_De_Voleybol{
+      + Nombre[] string
+      - Registro[] string
+      + Jugadores[] array_De_Jugador
+      + capitan[] Capitan
+      + entrenador[] Entrenador
+      -Jugar_Partido()
+   }
+
+   Class Persona {
+      + Nombre[] string
+      - Telefono[] string
+      - Direccion[] string
+   }
+
+   class Jugador{
+      + Numero[] int 
+      + Posicion[] int 
+   }
+
+   class Juego {
+      + Localidad[] string
+      + Puntuacion_Equipo_1[] int
+      + Puntuacion_Equipo_2[] int
+      -Ininiar_Jugeo()
+      -Pausar_Juego()
+      -Reanudar_Jueggo()
+      -Finalizar_Juego()
+   }
+
+   class Entrenador {
+      - Nivel_De_Acreditacion[] string
+      + Años_De_Experiencia[] int
+
+   }
+
+
+   skinparam Style strictuml
+   Persona  <|-- Jugador
+   Persona <|-- Entrenador
+   Equipo_De_Voleybol *-- "6...20" Jugador : Posee
+   Equipo_De_Voleybol "1...*" *-- "1" Entrenador : Entrenar 
+   Jugador <|-- Capitan
+   Equipo_De_Voleybol "2" -- "1" Juego : Compite
+
+}
+
+namespace Diagrama_De_Objeto {
+ object Venezuela_Team{
+   + Nombre = Federacion Venezolana de Voleyball
+   - Registro[] string
+   + Jugadores[1] = Felipe Caldera
+   + Jugadores[2] = Luis Muller
+   + Jugadores[3] = Leonardo Salazar
+   + Jugadores[4] = Samuel Guerra
+   + Jugadores[5] = Agustin Monteverde
+   + Jugadores[6]=  Manuel Fernandez
+   + capitan = Manuel Fernandez
+   + entrenador = Carlos Gonzales 
+ }
+
+ object Colombia_Team{
+   + Nombre[] Federacion Colombiana de Voleyball
+   - Registro[] string
+   + Jugadores[1] = Jesus Navas
+   + Jugadores[2] = Manuel Ramos
+   + Jugadores[3] = Sebastian Ocampos
+   + Jugadores[4] = Jean De Freintas
+   + Jugadores[5] = Luigi Piero
+   + Jugadores[6]= Samuel Velasquez
+   + capitan = Samuel Velasquez
+   + entrenador = Jose Abieiro
+ }
+ object Juego_Panamericano{
+    + Localidad = Chile
+    + Puntuacion_De_Venezuela = 21
+    + Puntuacion_De_Colombia = 19
+ }
+
+   Colombia_Team -- Venezuela_Team 
+   (Colombia_Team, Venezuela_Team) . Juego_Panamericano : Compiten
+}
+
+
+@enduml
