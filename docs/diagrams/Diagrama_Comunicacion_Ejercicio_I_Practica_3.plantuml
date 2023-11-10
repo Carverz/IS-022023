@@ -1,0 +1,20 @@
+@startuml
+
+state choice1 <<choice>>
+state choice2 <<choice>>
+[*] --> Producto_encargado: Encargar producto
+Producto_encargado --> Pedido_pagado: pagar pedido
+Producto_encargado --> Pedido_validado: realizar validacion
+Pedido_validado --> Pedido_cobrado: realizar cobro del pedido
+Pedido_pagado --> Pedido_cobrado: realizar cobro del pedido
+Pedido_cobrado --> choice2: Seleccionar tipo de entrega
+choice2--> Pedido_realizado: Entrega urgente
+choice2--> Pedido_realizado: Entrega normal
+Pedido_realizado --> Pedido_realizado: Notificar al cliente
+choice1 --> Pedido_realizado: Si 
+choice1 --> Pedido_realizado: No
+Pedido_realizado --> choice1: Dar cerveza a los transportistas
+Pedido_realizado --> [*]: Finalizar encargo
+
+@enduml
+

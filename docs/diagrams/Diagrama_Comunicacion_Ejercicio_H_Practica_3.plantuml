@@ -1,0 +1,29 @@
+@startuml
+    skinparam noteBackgroundColor transparent
+    skinparam noteBorderColor transparent
+    hide members
+
+    object "registro: Registro" as registro
+    object "venta: Venta" as venta
+    registro -d--> venta
+    note on link
+    1: crearNuevaVenta()
+    end note
+
+    registro -d--> venta
+    note on link
+    2: venta.crearLineaVenta(espec, cant)
+    end note
+
+
+    registro -d--> venta
+    note on link
+    3:  finalizarVenta() 
+    end note
+
+    
+    
+@enduml 
+
+
+
