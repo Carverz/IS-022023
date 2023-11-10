@@ -34,6 +34,7 @@ namespace Diagrama_De_Clases{
    class Entrenador {
       - Nivel_De_Acreditacion[] string
       + Años_De_Experiencia[] int
+      - Entrenar_Equipo()
 
    }
 
