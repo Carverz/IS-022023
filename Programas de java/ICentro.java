@@ -1,4 +1,4 @@
-package Programas_de_java;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
