@@ -8,7 +8,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-
 public class ICentro {
 
     public static void main(String[] args) {
@@ -118,6 +117,7 @@ public class ICentro {
             // Escribir la línea en el archivo
             writer.write(linea);
         } catch (IOException ex) {
+            ex.printStackTrace();
         }
-     } 
-} 
+    }
+}
