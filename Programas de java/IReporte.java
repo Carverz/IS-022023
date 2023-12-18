@@ -29,6 +29,12 @@ public class IReporte extends JFrame {
 
         // Crear un botón "Continuar" y agregarlo al panel continuePanel
         JButton Continue = new JButton("Continuar");
+        Continue.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Cerrar la ventana actual (IReporte)
+            }
+        });
         JPanel continuePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         continuePanel.setBorder(new EmptyBorder(0, 10, 10, 10)); // 10 píxeles en la parte inferior, 10 píxeles a la derecha
         continuePanel.add(Continue);
@@ -93,9 +99,21 @@ public class IReporte extends JFrame {
         JTextField ciTextField = new JTextField(10);
         JButton totalizarButton = new JButton("Totalizar");
 
+        // Agregar un área de texto para mostrar el mensaje de totalización individual
+        JTextArea individualResultArea = new JTextArea();
+        individualResultArea.setEditable(false);
+
+        totalizarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                totalizarIndividual(ciTextField.getText(), individualResultArea);
+            }
+        });
+
         individualPanel.add(ciLabel);
         individualPanel.add(ciTextField);
         individualPanel.add(totalizarButton);
+        individualPanel.add(individualResultArea);
 
         actualizarPanel(individualPanel);
     }
@@ -106,15 +124,29 @@ public class IReporte extends JFrame {
         generalPanel.setLayout(new BorderLayout());
 
         try (BufferedReader reader = new BufferedReader(new FileReader("inventario.txt"))) {
+            int totalEquipos = 0;
+            double totalMonto = 0.0;
+
             StringBuilder sb = new StringBuilder();
             String line;
+
             while ((line = reader.readLine()) != null) {
                 // Separar los datos por "#" y mostrarlos en el área de texto
                 String[] datos = line.split("#");
-                sb.append("C.I. Responsable: ").append(datos[5]).append(", Cantidad de equipos: ").append(datos[1])
-                        .append(", Monto total (Bs): ").append(Integer.parseInt(datos[1]) * Double.parseDouble(datos[2]))
-                        .append("\n");
+
+                int cantidadEquipos = Integer.parseInt(datos[1]);
+                double monto = cantidadEquipos * Double.parseDouble(datos[2]);
+
+                totalEquipos += cantidadEquipos;
+                totalMonto += monto;
+
+                sb.append("C.I. Responsable: ").append(datos[5]).append(", Cantidad de equipos: ").append(cantidadEquipos)
+                        .append(", Monto total (Bs): ").append(monto).append("\n");
             }
+
+            // Agregar el mensaje de totalización al área de texto
+            sb.append("\nTotalización General: ").append(totalEquipos).append(" equipos, ").append(totalMonto).append(" Bs\n");
+
             generalTextArea = new JTextArea(sb.toString());
             JScrollPane scrollPane = new JScrollPane(generalTextArea);
             generalPanel.add(scrollPane, BorderLayout.CENTER);
@@ -122,6 +154,7 @@ public class IReporte extends JFrame {
             e.printStackTrace();
         }
 
+        // Actualizar el panel en el marco
         actualizarPanel(generalPanel);
     }
 
@@ -130,6 +163,56 @@ public class IReporte extends JFrame {
         contentPanel.removeAll();
         contentPanel.add(nuevoPanel, BorderLayout.CENTER);
         revalidate();
+    }
+
+    // Método para verificar si el C.I. está registrado
+    private boolean ciRegistrado(String ci) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("inventario.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] datos = line.split("#");
+                if (datos.length > 5 && datos[5].equals(ci)) {
+                    return true; // El C.I. está registrado
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false; // El C.I. no está registrado
+    }
+
+    // Método para totalizar individualmente
+    private void totalizarIndividual(String ci, JTextArea resultArea) {
+        if (ciRegistrado(ci)) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("inventario.txt"))) {
+                int totalEquipos = 0;
+                double totalMonto = 0.0;
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    String[] datos = line.split("#");
+
+                    if (datos.length > 5 && datos[5].equals(ci)) {
+                        int cantidadEquipos = Integer.parseInt(datos[1]);
+                        double monto = cantidadEquipos * Double.parseDouble(datos[2]);
+
+                        totalEquipos += cantidadEquipos;
+                        totalMonto += monto;
+                    }
+                }
+
+                // Mostrar el mensaje de totalización individual en el área de texto
+                sb.append("Totalización Individual: ").append(totalEquipos).append(" equipos, ").append(totalMonto).append(" Bs\n");
+                resultArea.setText(sb.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Mostrar mensaje de error si el C.I. no está registrado
+            resultArea.setText("Error: El C.I. no está registrado.");
+        }
     }
 
     public static void main(String[] args) {

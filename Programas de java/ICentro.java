@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -29,7 +28,7 @@ public class ICentro {
         JTextField t3 = new JTextField(8);
 
         JLabel L4 = new JLabel("Fecha de adquisicion: dd/mm/aaaa");
-        JTextField t4 = new JTextField(4);
+        JTextField t4 = new JTextField(10);
 
         JLabel L5 = new JLabel("Nro. de factura:");
         JTextField t5 = new JTextField(4);
@@ -53,8 +52,16 @@ public class ICentro {
         Register.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registrarData(t1.getText(), t2.getText(), t3.getText(), t4.getText(), t5.getText(), t6.getText());
-                JOptionPane.showMessageDialog(f, "Equipo registrado correctamente.");
+                if (camposValidos(t1.getText(), t2.getText(), t3.getText(), t4.getText(), t5.getText(), t6.getText())) {
+                    if (validarFecha(t4.getText())) {
+                        registrarData(t1.getText(), t2.getText(), t3.getText(), t4.getText(), t5.getText(), t6.getText());
+                        JOptionPane.showMessageDialog(f, "Equipo registrado correctamente.");
+                    } else {
+                        JOptionPane.showMessageDialog(f, "Error: La fecha ingresada es incorrecta o menor a 1968.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(f, "Error: Datos inválidos. Asegúrese de que los campos no estén vacíos y que los valores numéricos no sean negativos o iguales a cero.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -107,9 +114,61 @@ public class ICentro {
         f.setVisible(true);
     }
 
+    // Método para validar la fecha
+    private static boolean validarFecha(String fecha) {
+        try {
+            String[] partes = fecha.split("/");
+            int dia = Integer.parseInt(partes[0]);
+            int mes = Integer.parseInt(partes[1]);
+            int ano = Integer.parseInt(partes[2]);
+
+            if (ano < 1968) {
+                return false; // La fecha es menor a 1968
+            }
+
+            if (mes < 1 || mes > 12) {
+                return false; // Mes fuera de rango
+            }
+
+            int[] diasPorMes = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+            int maxDias = diasPorMes[mes];
+
+            if (mes == 2 && esAnoBisiesto(ano)) {
+                maxDias = 29;
+            }
+
+            return dia >= 1 && dia <= maxDias;
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            return false; // Error al convertir a números o al acceder al array
+        }
+    }
+
+    // Método para verificar si es un año bisiesto
+    private static boolean esAnoBisiesto(int ano) {
+        return (ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0);
+    }
+
+    // Método para validar los campos de entrada
+    private static boolean camposValidos(String descripcion, String cantidad, String costoUnitario, String fecha, String numeroFactura, String ciResponsable) {
+        try {
+            // Verificar que no haya campos vacíos
+            if (descripcion.isEmpty() || cantidad.isEmpty() || costoUnitario.isEmpty() || fecha.isEmpty() || numeroFactura.isEmpty() || ciResponsable.isEmpty()) {
+                return false;
+            }
+
+            // Verificar que los valores numéricos no sean negativos o iguales a cero
+            double cantidadDouble = Double.parseDouble(cantidad);
+            double costoDouble = Double.parseDouble(costoUnitario);
+            double ciDouble = Double.parseDouble(ciResponsable);
+
+            return cantidadDouble > 0 && costoDouble > 0 && ciDouble > 0;
+        } catch (NumberFormatException e) {
+            return false; // Error al convertir a números
+        }
+    }
+
     // Método para guardar la información en un archivo
-    private static void registrarData(String descripcion, String cantidad, String costoUnitario,
-                                      String fecha, String numeroFactura, String ciResponsable) {
+    private static void registrarData(String descripcion, String cantidad, String costoUnitario, String fecha, String numeroFactura, String ciResponsable) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("inventario.txt", true))) {
             // Formato de la línea en el archivo
             String linea = String.format("%s#%s#%s#%s#%s#%s%n",
