@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Profesor{
+class Profesor{
     String Cedula = "";
     int equipos = 0;
     int bolivares = 0;
@@ -13,36 +13,35 @@ public class Profesor{
 }
 
 public class App {
-    String desc, nf, ci;
-    int ct, dd, mm, aaaa;
-    float mu;
-   public static void read(App app){
-        System.out.println("Ingrese los siguientes datos en el orden mostrado acontinuacion: ");
-        System.out.println("Descripcion del dispositivo: ");
-        Scanner sc= new Scanner(System.in);
-        app.desc = sc.nextLine();
-        System.out.println("Cantidad de dispositivos: ");
-        app.ct = sc.nextInt();
-        System.out.println("Costo unitario del dispositivo: ");
-        app.mu = sc.nextFloat();
-        System.out.println("Dia de hoy: ");
-        app.dd = sc.nextInt();
-        System.out.println("Mes actual: ");
-        app.mm = sc.nextInt();
-        System.out.println("Año actual: ");
-        app.aaaa = sc.nextInt();
-        System.out.println("Numero de factura: ");
-        app.nf = sc.nextLine();
-        System.out.println("Cedula del profesor: ");
-        app.ci = sc.nextLine();
-    }
+
+
+
+
 
     
     public static void main(String[] args) throws Exception {
 
-        App app;
-        read(app);
-        System.out.println(app.desc);
+        String desc, nf, ci;
+        int ct, dd, mm, aaaa;
+        float mu;
+        System.out.println("Ingrese los siguientes datos en el orden mostrado acontinuacion: ");
+        System.out.println("Descripcion del dispositivo: ");
+        Scanner sc= new Scanner(System.in);
+        desc = sc.nextLine();
+        System.out.println("Cantidad de dispositivos: ");
+        ct = sc.nextInt();
+        System.out.println("Costo unitario del dispositivo: ");
+        mu = sc.nextFloat();
+        System.out.println("Dia de hoy: ");
+        dd = sc.nextInt();
+        System.out.println("Mes actual: ");
+        mm = sc.nextInt();
+        System.out.println("Año actual: ");
+        aaaa = sc.nextInt();
+        System.out.println("Numero de factura: ");
+        nf = sc.nextLine();
+        System.out.println("Cedula del profesor: ");
+        ci = sc.nextLine();
 
 
     }  
